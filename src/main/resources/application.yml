@@ -1,0 +1,41 @@
+"%dev":
+  quarkus:
+    datasource:
+      db-kind: postgresql
+      username: microservice_access
+      password: 123456
+      jdbc:
+        url: jdbc:postgresql://localhost:5432/expenseDb
+    http:
+      auth:
+        permission:
+          authenticated:
+            paths: /*
+            policy: authenticated
+      access-log:
+        enabled: true
+      port: 8070
+    oidc:
+      auth-server-url: http://localhost:8081/realms/dive-dev
+    rest-client:
+      calculator-proxy:
+        url: https://localhost:8445
+        verify-host: false
+        trust-store: classpath:META-INF/resources/server.truststore
+        trust-store-password: server_password
+        key-store: classpath:META-INF/resources/client.keystore
+        key-store-password: client_password
+    smallrye-health:
+      root-path: /check
+      liveness-path: /live
+      readiness-path: /read
+    smallrye-metrics:
+      path: app-metrics
+      jaxrs:
+        enabled: true
+  org:
+    eclipse:
+      microprofile:
+        rest:
+          client:
+            propagateHeaders: Authorization
