@@ -3,7 +3,7 @@ package com.atech.calculator.rest.client.profit.proxy;
 import com.atech.calculator.rest.client.profit.model.Profit;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -13,7 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Path("/profit")
-@ApplicationScoped
+@Authenticated
 public class ProfitResource {
 
     @RestClient

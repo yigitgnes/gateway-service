@@ -1,6 +1,7 @@
 package com.atech.calculator.rest.client.item.proxy;
 
 import com.atech.calculator.rest.client.item.model.Item;
+import com.atech.calculator.rest.client.item.model.MonthlySalesDataDTO;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Path("/item")
+@Authenticated
 public class ItemResource {
 
     private Logger LOGGER = Logger.getLogger(ItemResource.class);
@@ -22,7 +24,7 @@ public class ItemResource {
     ItemProxy itemProxy;
 
     @GET
-    @RolesAllowed({"admin"})
+    @PermitAll
     public List<Item> getAllItems(){
         return itemProxy.getAllItems();
     }
@@ -53,7 +55,7 @@ public class ItemResource {
     }
 
     @POST
-    @RolesAllowed({"admin"})
+    @PermitAll
     @Operation(
             summary = "Post New Item",
             description = "Saves a new Item into the database."
@@ -64,7 +66,7 @@ public class ItemResource {
     }
 
     @PUT
-    @RolesAllowed({"admin"})
+    @PermitAll
     @Operation(
             summary = "Update An Item",
             description = "Updates an existing Item, if the item is exist"
@@ -85,4 +87,13 @@ public class ItemResource {
         itemProxy.deleteItem(id);
         return Response.noContent().build();
     }
+
+    @GET
+    @PermitAll
+    @Path("/sales/monthly")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<MonthlySalesDataDTO> getMonthlySales(){
+        return itemProxy.getMonthlySales();
+    }
+
 }

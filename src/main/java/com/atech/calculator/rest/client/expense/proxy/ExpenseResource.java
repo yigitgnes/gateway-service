@@ -1,6 +1,8 @@
 package com.atech.calculator.rest.client.expense.proxy;
 
 import com.atech.calculator.rest.client.expense.model.Expense;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -18,6 +20,7 @@ import org.jboss.logging.Logger;
 import java.util.List;
 
 @Path("/expense")
+@Authenticated
 public class ExpenseResource {
 
     private Logger LOGGER = Logger.getLogger(ExpenseResource.class);
@@ -30,29 +33,13 @@ public class ExpenseResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin"})
+    @PermitAll
     @Operation(
             description = "Returns all the Expenses saved into the database.",
             summary = "Get All Expenses"
     )
     @Timeout(3000)
     @Retry(maxRetries = 2)
-    @Counted(
-            name = "countFetchExpenses",
-            description = "Count how many times the 'getAllExpenses' method has been invoked",
-            absolute = true
-    )
-    @Timed(
-            name = "timeFetchExpenses",
-            description = "How long it takes to invoke the 'getAllExpenses' method",
-            unit = MetricUnits.SECONDS,
-            absolute = true
-    )
-    @Metered(
-            name = "meteredFetchExpenses",
-            description = "Measures throughput of 'getAllExpenses' method",
-            absolute = true
-    )
     public Response getAllExpenses() {
         LOGGER.info("Fetching all expenses");
         try {
@@ -73,7 +60,7 @@ public class ExpenseResource {
      */
     @GET
     @Path("/{id}")
-    @RolesAllowed({"admin"})
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
             description = "Fetches a specific expense from the database using the provided ID.",
@@ -81,22 +68,6 @@ public class ExpenseResource {
     )
     @Timeout(3000)
     @Retry(maxRetries = 2)
-    @Counted(
-            name = "countFetchExpenseById",
-            description = "Count how many times the 'getExpenseById' method has been invoked",
-            absolute = true
-    )
-    @Timed(
-            name = "timeFetchExpenseById",
-            description = "How long it takes to invoke the 'getExpenseById' method",
-            unit = MetricUnits.SECONDS,
-            absolute = true
-    )
-    @Metered(
-            name = "meteredFetchExpenseById",
-            description = "Measures throughput of 'getExpenseById' method",
-            absolute = true
-    )
     public Response getExpenseById(@PathParam("id") Long id) {
         LOGGER.info("Fetching expense by ID: " + id);
         try {
@@ -119,7 +90,7 @@ public class ExpenseResource {
      * @return
      */
     @POST
-    @RolesAllowed({"admin"})
+    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
@@ -147,7 +118,7 @@ public class ExpenseResource {
      * @return
      */
     @PUT
-    @RolesAllowed({"admin"})
+    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(

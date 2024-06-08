@@ -7,16 +7,23 @@
       jdbc:
         url: jdbc:postgresql://localhost:5432/expenseDb
     http:
-      auth:
-        permission:
-          authenticated:
-            paths: /*
-            policy: authenticated
       access-log:
         enabled: true
       port: 8070
+      cors:
+        ~: true
+        origins: /.*/
+        methods: GET, PUT, POST, DELETE
     oidc:
+      client-id: gateway-service
+      credentials:
+        secret: esV7eo1Gzsf7AlwTiNK3rspz275jbu7Z
       auth-server-url: http://localhost:8081/realms/dive-dev
+      tls:
+        verification: none
+    keycloak:
+      policy-enforcer:
+        enabled: true
     rest-client:
       calculator-proxy:
         url: https://localhost:8445
@@ -25,6 +32,9 @@
         trust-store-password: server_password
         key-store: classpath:META-INF/resources/client.keystore
         key-store-password: client_password
+    smallrye-openapi:
+      security-scheme: oidc
+      oidc-open-id-connect-url: http://localhost:8081/realms/dive-dev/.well-known/openid-configuration
     smallrye-health:
       root-path: /check
       liveness-path: /live

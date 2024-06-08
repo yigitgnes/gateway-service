@@ -1,6 +1,7 @@
 package com.atech.calculator.rest.client.item.proxy;
 
 import com.atech.calculator.rest.client.item.model.Item;
+import com.atech.calculator.rest.client.item.model.MonthlySalesDataDTO;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -28,4 +29,8 @@ public interface ItemProxy {
     @DELETE
     @Path("/{id}")
     Response deleteItem(@PathParam("id") Long id);
+
+    @GET
+    @Path("/sales/monthly")
+    List<MonthlySalesDataDTO> getMonthlySales();
 }
