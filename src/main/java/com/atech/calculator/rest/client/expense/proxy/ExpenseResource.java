@@ -1,6 +1,7 @@
 package com.atech.calculator.rest.client.expense.proxy;
 
 import com.atech.calculator.rest.client.expense.model.Expense;
+import com.atech.calculator.rest.client.item.model.MonthlySalesDataDTO;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -170,6 +171,14 @@ public class ExpenseResource {
             LOGGER.error("Failed to delete expense", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Internal server error").build();
         }
+    }
+
+    @GET
+    @PermitAll
+    @Path("/monthly")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMonthlyExpenseForCurrentYear(){
+        return expenseProxy.getMonthlyExpenseForCurrentYear();
     }
 
 }

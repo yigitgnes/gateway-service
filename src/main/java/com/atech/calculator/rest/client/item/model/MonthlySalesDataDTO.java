@@ -1,5 +1,7 @@
 package com.atech.calculator.rest.client.item.model;
 
+import java.math.BigDecimal;
+
 public class MonthlySalesDataDTO {
 
     private String month;

@@ -33,4 +33,9 @@ public interface ItemProxy {
     @GET
     @Path("/sales/monthly")
     List<MonthlySalesDataDTO> getMonthlySales();
+
+    @GET
+    @Path("/earning/monthly")
+    List<MonthlySalesDataDTO> getMonthlyEarnings();
+
 }

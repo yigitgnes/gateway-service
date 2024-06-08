@@ -96,4 +96,12 @@ public class ItemResource {
         return itemProxy.getMonthlySales();
     }
 
+    @GET
+    @PermitAll
+    @Path("/earning/monthly")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<MonthlySalesDataDTO> getMonthlyEarnings(){
+        return itemProxy.getMonthlyEarnings();
+    }
+
 }

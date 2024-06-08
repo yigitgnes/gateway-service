@@ -30,4 +30,8 @@ public interface ExpenseProxy {
     @Path("/{id}")
     Response deleteExpense(@PathParam("id") Long id);
 
+    @GET
+    @Path("/monthly")
+    Response getMonthlyExpenseForCurrentYear();
+
 }
