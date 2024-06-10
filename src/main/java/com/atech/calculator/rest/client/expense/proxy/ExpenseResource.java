@@ -41,11 +41,16 @@ public class ExpenseResource {
     )
     @Timeout(3000)
     @Retry(maxRetries = 2)
-    public Response getAllExpenses() {
+    public Response getAllExpenses(@DefaultValue("1") @QueryParam("page") int page,
+                                   @DefaultValue("10") @QueryParam("size") int size) {
         LOGGER.info("Fetching all expenses");
         try {
-            List<Expense> expenses = expenseProxy.getAllExpenses();
-            return Response.ok(expenses).build();
+            page = (page < 1) ? 1 : page;
+            size = (size <= 0) ? 10 : size;
+
+            Response response = expenseProxy.getAllExpenses(page, size);
+
+            return Response.ok(response.readEntity(PagedResult.class)).build();
         } catch (WebApplicationException e) {
             LOGGER.error("Web application error when fetching all expenses", e);
             return Response.status(e.getResponse().getStatus()).entity(e.getMessage()).build();
@@ -147,7 +152,7 @@ public class ExpenseResource {
      * @return
      */
     @DELETE
-    @RolesAllowed({"admin"})
+    @PermitAll
     @Path("/{id}")
     @Operation(
             description = "Deletes the Expense by the given ID",
@@ -181,4 +186,20 @@ public class ExpenseResource {
         return expenseProxy.getMonthlyExpenseForCurrentYear();
     }
 
+    public static class PagedResult<T> {
+        public List<T> items;
+        public int page;
+        public int size;
+        public long totalCount;
+
+        public PagedResult() {
+        }
+
+        public PagedResult(List<T> items, int page, int size, long totalCount) {
+            this.items = items;
+            this.page = page;
+            this.size = size;
+            this.totalCount = totalCount;
+        }
+    }
 }

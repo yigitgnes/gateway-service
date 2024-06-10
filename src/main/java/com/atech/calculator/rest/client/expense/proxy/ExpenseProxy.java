@@ -14,7 +14,8 @@ import java.util.List;
 public interface ExpenseProxy {
 
     @GET
-    List<Expense> getAllExpenses();
+    Response getAllExpenses(@DefaultValue("0") @QueryParam("page") int page,
+                            @DefaultValue("10") @QueryParam("size") int size);
 
     @GET
     @Path("/{id}")
