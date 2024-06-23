@@ -14,7 +14,8 @@ import java.util.Optional;
 public interface ItemProxy {
 
     @GET
-    List<Item> getAllItems();
+    Response getAllItems(@DefaultValue("0") @QueryParam("page") int page,
+                           @DefaultValue("10") @QueryParam("size") int size);
 
     @GET
     @Path("/{id}")

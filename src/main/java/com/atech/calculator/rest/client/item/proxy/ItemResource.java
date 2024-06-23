@@ -25,8 +25,18 @@ public class ItemResource {
 
     @GET
     @PermitAll
-    public List<Item> getAllItems(){
-        return itemProxy.getAllItems();
+    public Response getAllItems(@DefaultValue("0") @QueryParam("page") int page,
+                                @DefaultValue("10") @QueryParam("size") int size) {
+        try {
+            page = (page < 1) ? 1 : page;
+            size = (size <= 0) ? 10 : size;
+
+            return Response.ok(itemProxy.getAllItems(page, size).readEntity(PagedResult.class)).build();
+        } catch (WebApplicationException e) {
+            return Response.status(e.getResponse().getStatus()).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error retrieving items").build();
+        }
     }
 
     @GET
@@ -39,8 +49,8 @@ public class ItemResource {
     )
     public Response getItemById(@PathParam("id") Long id) {
         LOGGER.info("Fetching expense by ID: " + id);
-        if (id <= 0 || id == null){
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid ID provided"). build();
+        if (id <= 0 || id == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid ID provided").build();
         }
         try {
             Optional<Item> itemOptional = itemProxy.getItemById(id);
@@ -60,7 +70,7 @@ public class ItemResource {
             summary = "Post New Item",
             description = "Saves a new Item into the database."
     )
-    public Response createExpense(Item item){
+    public Response createExpense(Item item) {
         itemProxy.createItem(item);
         return Response.ok(item).build();
     }
@@ -71,7 +81,7 @@ public class ItemResource {
             summary = "Update An Item",
             description = "Updates an existing Item, if the item is exist"
     )
-    public Response updateExpense(Item item){
+    public Response updateExpense(Item item) {
         itemProxy.updateItem(item);
         return Response.ok(item).build();
     }
@@ -83,7 +93,7 @@ public class ItemResource {
             description = "Deletes the Item by the given ID",
             summary = "Delete the Item"
     )
-    public Response deleteExpense(@PathParam("id") Long id){
+    public Response deleteExpense(@PathParam("id") Long id) {
         itemProxy.deleteItem(id);
         return Response.noContent().build();
     }
@@ -92,7 +102,7 @@ public class ItemResource {
     @PermitAll
     @Path("/sales/monthly")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<MonthlySalesDataDTO> getMonthlySales(){
+    public List<MonthlySalesDataDTO> getMonthlySales() {
         return itemProxy.getMonthlySales();
     }
 
@@ -100,8 +110,25 @@ public class ItemResource {
     @PermitAll
     @Path("/earning/monthly")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<MonthlySalesDataDTO> getMonthlyEarnings(){
+    public List<MonthlySalesDataDTO> getMonthlyEarnings() {
         return itemProxy.getMonthlyEarnings();
+    }
+
+    public static class PagedResult<T> {
+        public List<T> items;
+        public int page;
+        public int size;
+        public long totalCount;
+
+        public PagedResult() {
+        }
+
+        public PagedResult(List<T> items, int page, int size, long totalCount) {
+            this.items = items;
+            this.page = page;
+            this.size = size;
+            this.totalCount = totalCount;
+        }
     }
 
 }
